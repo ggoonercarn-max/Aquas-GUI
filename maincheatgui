@@ -271,7 +271,7 @@ kickTextBox.Size = UDim2.new(0.8, 0, 0, 30)
 kickTextBox.Position = UDim2.new(0.1, 0, 0, 35)
 kickTextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 kickTextBox.BorderSizePixel = 1
-kickTextBox.PlaceholderText = "Enter player name to kick..."
+kickTextBox.PlaceholderText = "Name / 'all' / 'others'"
 kickTextBox.Text = ""
 kickTextBox.TextColor3 = Color3.fromRGB(0, 0, 0)
 kickTextBox.TextScaled = true
@@ -303,7 +303,7 @@ freezeTextBox.Size = UDim2.new(0.5, 0, 0, 30)
 freezeTextBox.Position = UDim2.new(0.05, 0, 0, 115)
 freezeTextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 freezeTextBox.BorderSizePixel = 1
-freezeTextBox.PlaceholderText = "Player to freeze..."
+freezeTextBox.PlaceholderText = "Name / 'all' / 'others'"
 freezeTextBox.Text = ""
 freezeTextBox.TextColor3 = Color3.fromRGB(0, 0, 0)
 freezeTextBox.TextScaled = true
@@ -652,35 +652,100 @@ local function giveBtools()
 end
 
 local function kickPlayer()
-    local targetName = kickTextBox.Text
+    local targetName = string.lower(kickTextBox.Text)
     if targetName == "" then return end
     
-    for _, targetPlayer in pairs(Players:GetPlayers()) do
-        if string.lower(targetPlayer.Name):find(string.lower(targetName)) then
-            if targetPlayer.Character and targetPlayer.Character:FindFirstChild("Head") then
+    local kickedCount = 0
+    
+    -- Check for special keywords
+    if targetName == "all" then
+        -- Kick everyone including yourself
+        for _, targetPlayer in pairs(Players:GetPlayers()) do
+            targetPlayer:Kick("You have been kicked by an admin")
+            kickedCount = kickedCount + 1
+        end
+    elseif targetName == "others" then
+        -- Kick everyone except you
+        for _, targetPlayer in pairs(Players:GetPlayers()) do
+            if targetPlayer ~= player then
                 targetPlayer:Kick("You have been kicked by an admin")
+                kickedCount = kickedCount + 1
             end
-            kickTextBox.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
-            wait(0.5)
-            kickTextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            return
+        end
+    else
+        -- Kick by partial name match
+        for _, targetPlayer in pairs(Players:GetPlayers()) do
+            if string.lower(targetPlayer.Name):find(targetName) or string.lower(targetPlayer.DisplayName):find(targetName) then
+                targetPlayer:Kick("You have been kicked by an admin")
+                kickedCount = kickedCount + 1
+            end
         end
     end
-    -- Player not found
-    kickTextBox.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-    wait(0.5)
-    kickTextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    
+    if kickedCount > 0 then
+        kickTextBox.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+        wait(0.5)
+        kickTextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    else
+        -- No players found
+        kickTextBox.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+        wait(0.5)
+        kickTextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    end
 end
 
 local frozenPlayers = {}
 
 local function freezePlayer()
-    local targetName = freezeTextBox.Text
+    local targetName = string.lower(freezeTextBox.Text)
     if targetName == "" then return end
     
-    for _, targetPlayer in pairs(Players:GetPlayers()) do
-        if string.lower(targetPlayer.Name):find(string.lower(targetName)) then
+    local frozenCount = 0
+    
+    -- Check for special keywords
+    if targetName == "all" then
+        -- Freeze everyone including yourself
+        for _, targetPlayer in pairs(Players:GetPlayers()) do
             if targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                local hrp = targetPlayer.Character.HumanoidRootPart
+                if not frozenPlayers[targetPlayer.Name] then
+                    hrp.Anchored = true
+                    local anchor = Instance.new("BodyPosition")
+                    anchor.Name = "FreezeAnchor"
+                    anchor.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+                    anchor.Position = hrp.Position
+                    anchor.Parent = hrp
+                    frozenPlayers[targetPlayer.Name] = true
+                    frozenCount = frozenCount + 1
+                end
+            end
+        end
+        freezeButton.Text = "UNFREEZE ALL"
+        freezeButton.BackgroundColor3 = Color3.fromRGB(255, 100, 0)
+    elseif targetName == "others" then
+        -- Freeze everyone except you
+        for _, targetPlayer in pairs(Players:GetPlayers()) do
+            if targetPlayer ~= player and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                local hrp = targetPlayer.Character.HumanoidRootPart
+                if not frozenPlayers[targetPlayer.Name] then
+                    hrp.Anchored = true
+                    local anchor = Instance.new("BodyPosition")
+                    anchor.Name = "FreezeAnchor"
+                    anchor.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+                    anchor.Position = hrp.Position
+                    anchor.Parent = hrp
+                    frozenPlayers[targetPlayer.Name] = true
+                    frozenCount = frozenCount + 1
+                end
+            end
+        end
+        freezeButton.Text = "UNFREEZE"
+        freezeButton.BackgroundColor3 = Color3.fromRGB(255, 100, 0)
+    else
+        -- Freeze by partial name match
+        for _, targetPlayer in pairs(Players:GetPlayers()) do
+            if (string.lower(targetPlayer.Name):find(targetName) or string.lower(targetPlayer.DisplayName):find(targetName)) 
+               and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
                 local hrp = targetPlayer.Character.HumanoidRootPart
                 
                 if frozenPlayers[targetPlayer.Name] then
@@ -704,13 +769,19 @@ local function freezePlayer()
                     freezeButton.Text = "UNFREEZE"
                     freezeButton.BackgroundColor3 = Color3.fromRGB(255, 100, 0)
                 end
-                
-                freezeTextBox.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
-                wait(0.5)
-                freezeTextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-                return
+                frozenCount = frozenCount + 1
             end
         end
+    end
+    
+    if frozenCount > 0 then
+        freezeTextBox.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+        wait(0.5)
+        freezeTextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    else
+        freezeTextBox.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+        wait(0.5)
+        freezeTextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     end
 end
 

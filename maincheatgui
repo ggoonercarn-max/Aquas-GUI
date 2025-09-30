@@ -1,0 +1,817 @@
+-- Aqua GUI Multi Feature Script FIXED
+-- Place this as a LocalScript in StarterPlayerScripts
+
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local Workspace = game:GetService("Workspace")
+
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- Create ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "AquaMultiGUI"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = playerGui
+
+-- Main Frame
+local mainFrame = Instance.new("Frame")
+mainFrame.Name = "MainFrame"
+mainFrame.Size = UDim2.new(0, 450, 0, 550)
+mainFrame.Position = UDim2.new(0.5, -225, 0.5, -275)
+mainFrame.BackgroundColor3 = Color3.fromRGB(64, 224, 208)
+mainFrame.BorderSizePixel = 0
+mainFrame.Active = true
+mainFrame.Draggable = true
+mainFrame.Parent = screenGui
+
+local mainCorner = Instance.new("UICorner")
+mainCorner.CornerRadius = UDim.new(0, 8)
+mainCorner.Parent = mainFrame
+
+-- Title Label
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Name = "TitleLabel"
+titleLabel.Size = UDim2.new(1, 0, 0, 50)
+titleLabel.Position = UDim2.new(0, 0, 0, 0)
+titleLabel.BackgroundTransparency = 1
+titleLabel.Text = "Aqua's GUI"
+titleLabel.TextColor3 = Color3.fromRGB(255, 20, 147)
+titleLabel.TextScaled = true
+titleLabel.Font = Enum.Font.GothamBold
+titleLabel.Parent = mainFrame
+
+-- Subtitle
+local subtitleLabel = Instance.new("TextLabel")
+subtitleLabel.Size = UDim2.new(1, 0, 0, 25)
+subtitleLabel.Position = UDim2.new(0, 0, 0, 50)
+subtitleLabel.BackgroundTransparency = 1
+subtitleLabel.Text = "Multi-Feature Hub"
+subtitleLabel.TextColor3 = Color3.fromRGB(255, 20, 147)
+subtitleLabel.TextScaled = true
+subtitleLabel.Font = Enum.Font.Gotham
+subtitleLabel.Parent = mainFrame
+
+-- Scrolling Frame
+local scrollFrame = Instance.new("ScrollingFrame")
+scrollFrame.Size = UDim2.new(1, -20, 1, -105)
+scrollFrame.Position = UDim2.new(0, 10, 0, 85)
+scrollFrame.BackgroundTransparency = 1
+scrollFrame.BorderSizePixel = 0
+scrollFrame.ScrollBarThickness = 8
+scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 900)
+scrollFrame.Parent = mainFrame
+
+-- Health Section
+local healthSection = Instance.new("Frame")
+healthSection.Size = UDim2.new(1, -10, 0, 120)
+healthSection.Position = UDim2.new(0, 5, 0, 0)
+healthSection.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+healthSection.BackgroundTransparency = 0.1
+healthSection.BorderSizePixel = 0
+healthSection.Parent = scrollFrame
+
+local healthCornerSection = Instance.new("UICorner")
+healthCornerSection.CornerRadius = UDim.new(0, 6)
+healthCornerSection.Parent = healthSection
+
+local healthTitle = Instance.new("TextLabel")
+healthTitle.Size = UDim2.new(1, 0, 0, 25)
+healthTitle.Position = UDim2.new(0, 0, 0, 5)
+healthTitle.BackgroundTransparency = 1
+healthTitle.Text = "Health Customizer"
+healthTitle.TextColor3 = Color3.fromRGB(255, 20, 147)
+healthTitle.TextScaled = true
+healthTitle.Font = Enum.Font.GothamBold
+healthTitle.Parent = healthSection
+
+local healthTextBox = Instance.new("TextBox")
+healthTextBox.Size = UDim2.new(0.8, 0, 0, 30)
+healthTextBox.Position = UDim2.new(0.1, 0, 0, 35)
+healthTextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+healthTextBox.BorderSizePixel = 1
+healthTextBox.PlaceholderText = "Enter health amount..."
+healthTextBox.Text = ""
+healthTextBox.TextColor3 = Color3.fromRGB(0, 0, 0)
+healthTextBox.TextScaled = true
+healthTextBox.Font = Enum.Font.Gotham
+healthTextBox.Parent = healthSection
+
+local healthBoxCorner = Instance.new("UICorner")
+healthBoxCorner.CornerRadius = UDim.new(0, 4)
+healthBoxCorner.Parent = healthTextBox
+
+local setHealthButton = Instance.new("TextButton")
+setHealthButton.Size = UDim2.new(0.4, 0, 0, 30)
+setHealthButton.Position = UDim2.new(0.3, 0, 0, 75)
+setHealthButton.BackgroundColor3 = Color3.fromRGB(255, 20, 147)
+setHealthButton.BorderSizePixel = 0
+setHealthButton.Text = "SET HEALTH"
+setHealthButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+setHealthButton.TextScaled = true
+setHealthButton.Font = Enum.Font.GothamBold
+setHealthButton.Parent = healthSection
+
+local healthButtonCorner = Instance.new("UICorner")
+healthButtonCorner.CornerRadius = UDim.new(0, 4)
+healthButtonCorner.Parent = setHealthButton
+
+-- Player Actions Section
+local playerSection = Instance.new("Frame")
+playerSection.Size = UDim2.new(1, -10, 0, 180)
+playerSection.Position = UDim2.new(0, 5, 0, 130)
+playerSection.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+playerSection.BackgroundTransparency = 0.1
+playerSection.BorderSizePixel = 0
+playerSection.Parent = scrollFrame
+
+local playerCornerSection = Instance.new("UICorner")
+playerCornerSection.CornerRadius = UDim.new(0, 6)
+playerCornerSection.Parent = playerSection
+
+local playerTitle = Instance.new("TextLabel")
+playerTitle.Size = UDim2.new(1, 0, 0, 25)
+playerTitle.Position = UDim2.new(0, 0, 0, 5)
+playerTitle.BackgroundTransparency = 1
+playerTitle.Text = "Player Actions"
+playerTitle.TextColor3 = Color3.fromRGB(255, 20, 147)
+playerTitle.TextScaled = true
+playerTitle.Font = Enum.Font.GothamBold
+playerTitle.Parent = playerSection
+
+-- Kill All Button
+local killAllButton = Instance.new("TextButton")
+killAllButton.Size = UDim2.new(0.4, 0, 0, 30)
+killAllButton.Position = UDim2.new(0.05, 0, 0, 35)
+killAllButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+killAllButton.BorderSizePixel = 0
+killAllButton.Text = "KILL ALL"
+killAllButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+killAllButton.TextScaled = true
+killAllButton.Font = Enum.Font.GothamBold
+killAllButton.Parent = playerSection
+
+local killAllCorner = Instance.new("UICorner")
+killAllCorner.CornerRadius = UDim.new(0, 4)
+killAllCorner.Parent = killAllButton
+
+-- Respawn Button
+local respawnButton = Instance.new("TextButton")
+respawnButton.Size = UDim2.new(0.4, 0, 0, 30)
+respawnButton.Position = UDim2.new(0.55, 0, 0, 35)
+respawnButton.BackgroundColor3 = Color3.fromRGB(50, 255, 50)
+respawnButton.BorderSizePixel = 0
+respawnButton.Text = "RESPAWN"
+respawnButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+respawnButton.TextScaled = true
+respawnButton.Font = Enum.Font.GothamBold
+respawnButton.Parent = playerSection
+
+local respawnCorner = Instance.new("UICorner")
+respawnCorner.CornerRadius = UDim.new(0, 4)
+respawnCorner.Parent = respawnButton
+
+-- God Mode Toggle
+local godModeButton = Instance.new("TextButton")
+godModeButton.Size = UDim2.new(0.4, 0, 0, 30)
+godModeButton.Position = UDim2.new(0.05, 0, 0, 75)
+godModeButton.BackgroundColor3 = Color3.fromRGB(255, 215, 0)
+godModeButton.BorderSizePixel = 0
+godModeButton.Text = "GOD MODE: OFF"
+godModeButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+godModeButton.TextScaled = true
+godModeButton.Font = Enum.Font.GothamBold
+godModeButton.Parent = playerSection
+
+local godModeCorner = Instance.new("UICorner")
+godModeCorner.CornerRadius = UDim.new(0, 4)
+godModeCorner.Parent = godModeButton
+
+-- Infinite Jump Toggle
+local infJumpButton = Instance.new("TextButton")
+infJumpButton.Size = UDim2.new(0.4, 0, 0, 30)
+infJumpButton.Position = UDim2.new(0.55, 0, 0, 75)
+infJumpButton.BackgroundColor3 = Color3.fromRGB(138, 43, 226)
+infJumpButton.BorderSizePixel = 0
+infJumpButton.Text = "INF JUMP: OFF"
+infJumpButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+infJumpButton.TextScaled = true
+infJumpButton.Font = Enum.Font.GothamBold
+infJumpButton.Parent = playerSection
+
+local infJumpCorner = Instance.new("UICorner")
+infJumpCorner.CornerRadius = UDim.new(0, 4)
+infJumpCorner.Parent = infJumpButton
+
+-- Speed Section
+local speedFrame = Instance.new("Frame")
+speedFrame.Size = UDim2.new(1, 0, 0, 40)
+speedFrame.Position = UDim2.new(0, 0, 0, 115)
+speedFrame.BackgroundTransparency = 1
+speedFrame.Parent = playerSection
+
+local speedTextBox = Instance.new("TextBox")
+speedTextBox.Size = UDim2.new(0.6, 0, 0, 30)
+speedTextBox.Position = UDim2.new(0.05, 0, 0, 5)
+speedTextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+speedTextBox.BorderSizePixel = 1
+speedTextBox.PlaceholderText = "Speed (default: 16)"
+speedTextBox.Text = ""
+speedTextBox.TextColor3 = Color3.fromRGB(0, 0, 0)
+speedTextBox.TextScaled = true
+speedTextBox.Font = Enum.Font.Gotham
+speedTextBox.Parent = speedFrame
+
+local speedBoxCorner = Instance.new("UICorner")
+speedBoxCorner.CornerRadius = UDim.new(0, 4)
+speedBoxCorner.Parent = speedTextBox
+
+local setSpeedButton = Instance.new("TextButton")
+setSpeedButton.Size = UDim2.new(0.3, 0, 0, 30)
+setSpeedButton.Position = UDim2.new(0.68, 0, 0, 5)
+setSpeedButton.BackgroundColor3 = Color3.fromRGB(255, 20, 147)
+setSpeedButton.BorderSizePixel = 0
+setSpeedButton.Text = "SET"
+setSpeedButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+setSpeedButton.TextScaled = true
+setSpeedButton.Font = Enum.Font.GothamBold
+setSpeedButton.Parent = speedFrame
+
+local speedButtonCorner = Instance.new("UICorner")
+speedButtonCorner.CornerRadius = UDim.new(0, 4)
+speedButtonCorner.Parent = setSpeedButton
+
+-- Admin Actions Section
+local adminSection = Instance.new("Frame")
+adminSection.Size = UDim2.new(1, -10, 0, 180)
+adminSection.Position = UDim2.new(0, 5, 0, 320)
+adminSection.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+adminSection.BackgroundTransparency = 0.1
+adminSection.BorderSizePixel = 0
+adminSection.Parent = scrollFrame
+
+local adminCornerSection = Instance.new("UICorner")
+adminCornerSection.CornerRadius = UDim.new(0, 6)
+adminCornerSection.Parent = adminSection
+
+local adminTitle = Instance.new("TextLabel")
+adminTitle.Size = UDim2.new(1, 0, 0, 25)
+adminTitle.Position = UDim2.new(0, 0, 0, 5)
+adminTitle.BackgroundTransparency = 1
+adminTitle.Text = "Admin Actions"
+adminTitle.TextColor3 = Color3.fromRGB(255, 20, 147)
+adminTitle.TextScaled = true
+adminTitle.Font = Enum.Font.GothamBold
+adminTitle.Parent = adminSection
+
+-- Kick Player TextBox
+local kickTextBox = Instance.new("TextBox")
+kickTextBox.Size = UDim2.new(0.8, 0, 0, 30)
+kickTextBox.Position = UDim2.new(0.1, 0, 0, 35)
+kickTextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+kickTextBox.BorderSizePixel = 1
+kickTextBox.PlaceholderText = "Enter player name to kick..."
+kickTextBox.Text = ""
+kickTextBox.TextColor3 = Color3.fromRGB(0, 0, 0)
+kickTextBox.TextScaled = true
+kickTextBox.Font = Enum.Font.Gotham
+kickTextBox.Parent = adminSection
+
+local kickBoxCorner = Instance.new("UICorner")
+kickBoxCorner.CornerRadius = UDim.new(0, 4)
+kickBoxCorner.Parent = kickTextBox
+
+local kickButton = Instance.new("TextButton")
+kickButton.Size = UDim2.new(0.4, 0, 0, 30)
+kickButton.Position = UDim2.new(0.3, 0, 0, 75)
+kickButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+kickButton.BorderSizePixel = 0
+kickButton.Text = "KICK PLAYER"
+kickButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+kickButton.TextScaled = true
+kickButton.Font = Enum.Font.GothamBold
+kickButton.Parent = adminSection
+
+local kickButtonCorner = Instance.new("UICorner")
+kickButtonCorner.CornerRadius = UDim.new(0, 4)
+kickButtonCorner.Parent = kickButton
+
+-- Freeze/Unfreeze Player
+local freezeTextBox = Instance.new("TextBox")
+freezeTextBox.Size = UDim2.new(0.5, 0, 0, 30)
+freezeTextBox.Position = UDim2.new(0.05, 0, 0, 115)
+freezeTextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+freezeTextBox.BorderSizePixel = 1
+freezeTextBox.PlaceholderText = "Player to freeze..."
+freezeTextBox.Text = ""
+freezeTextBox.TextColor3 = Color3.fromRGB(0, 0, 0)
+freezeTextBox.TextScaled = true
+freezeTextBox.Font = Enum.Font.Gotham
+freezeTextBox.Parent = adminSection
+
+local freezeBoxCorner = Instance.new("UICorner")
+freezeBoxCorner.CornerRadius = UDim.new(0, 4)
+freezeBoxCorner.Parent = freezeTextBox
+
+local freezeButton = Instance.new("TextButton")
+freezeButton.Size = UDim2.new(0.35, 0, 0, 30)
+freezeButton.Position = UDim2.new(0.6, 0, 0, 115)
+freezeButton.BackgroundColor3 = Color3.fromRGB(0, 191, 255)
+freezeButton.BorderSizePixel = 0
+freezeButton.Text = "FREEZE"
+freezeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+freezeButton.TextScaled = true
+freezeButton.Font = Enum.Font.GothamBold
+freezeButton.Parent = adminSection
+
+local freezeButtonCorner = Instance.new("UICorner")
+freezeButtonCorner.CornerRadius = UDim.new(0, 4)
+freezeButtonCorner.Parent = freezeButton
+
+-- Fun Features Section
+local funSection = Instance.new("Frame")
+funSection.Size = UDim2.new(1, -10, 0, 150)
+funSection.Position = UDim2.new(0, 5, 0, 510)
+funSection.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+funSection.BackgroundTransparency = 0.1
+funSection.BorderSizePixel = 0
+funSection.Parent = scrollFrame
+
+local funCornerSection = Instance.new("UICorner")
+funCornerSection.CornerRadius = UDim.new(0, 6)
+funCornerSection.Parent = funSection
+
+local funTitle = Instance.new("TextLabel")
+funTitle.Size = UDim2.new(1, 0, 0, 25)
+funTitle.Position = UDim2.new(0, 0, 0, 5)
+funTitle.BackgroundTransparency = 1
+funTitle.Text = "Fun Features"
+funTitle.TextColor3 = Color3.fromRGB(255, 20, 147)
+funTitle.TextScaled = true
+funTitle.Font = Enum.Font.GothamBold
+funTitle.Parent = funSection
+
+-- Fly Toggle
+local flyButton = Instance.new("TextButton")
+flyButton.Size = UDim2.new(0.4, 0, 0, 30)
+flyButton.Position = UDim2.new(0.05, 0, 0, 35)
+flyButton.BackgroundColor3 = Color3.fromRGB(30, 144, 255)
+flyButton.BorderSizePixel = 0
+flyButton.Text = "FLY: OFF"
+flyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+flyButton.TextScaled = true
+flyButton.Font = Enum.Font.GothamBold
+flyButton.Parent = funSection
+
+local flyCorner = Instance.new("UICorner")
+flyCorner.CornerRadius = UDim.new(0, 4)
+flyCorner.Parent = flyButton
+
+-- Teleport to Spawn
+local tpSpawnButton = Instance.new("TextButton")
+tpSpawnButton.Size = UDim2.new(0.4, 0, 0, 30)
+tpSpawnButton.Position = UDim2.new(0.55, 0, 0, 35)
+tpSpawnButton.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
+tpSpawnButton.BorderSizePixel = 0
+tpSpawnButton.Text = "TP SPAWN"
+tpSpawnButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+tpSpawnButton.TextScaled = true
+tpSpawnButton.Font = Enum.Font.GothamBold
+tpSpawnButton.Parent = funSection
+
+local tpSpawnCorner = Instance.new("UICorner")
+tpSpawnCorner.CornerRadius = UDim.new(0, 4)
+tpSpawnCorner.Parent = tpSpawnButton
+
+-- Noclip Toggle
+local noclipButton = Instance.new("TextButton")
+noclipButton.Size = UDim2.new(0.4, 0, 0, 30)
+noclipButton.Position = UDim2.new(0.05, 0, 0, 75)
+noclipButton.BackgroundColor3 = Color3.fromRGB(255, 69, 0)
+noclipButton.BorderSizePixel = 0
+noclipButton.Text = "NOCLIP: OFF"
+noclipButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+noclipButton.TextScaled = true
+noclipButton.Font = Enum.Font.GothamBold
+noclipButton.Parent = funSection
+
+local noclipCorner = Instance.new("UICorner")
+noclipCorner.CornerRadius = UDim.new(0, 4)
+noclipCorner.Parent = noclipButton
+
+-- BTools
+local btoolsButton = Instance.new("TextButton")
+btoolsButton.Size = UDim2.new(0.4, 0, 0, 30)
+btoolsButton.Position = UDim2.new(0.55, 0, 0, 75)
+btoolsButton.BackgroundColor3 = Color3.fromRGB(34, 139, 34)
+btoolsButton.BorderSizePixel = 0
+btoolsButton.Text = "BTOOLS"
+btoolsButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+btoolsButton.TextScaled = true
+btoolsButton.Font = Enum.Font.GothamBold
+btoolsButton.Parent = funSection
+
+local btoolsCorner = Instance.new("UICorner")
+btoolsCorner.CornerRadius = UDim.new(0, 4)
+btoolsCorner.Parent = btoolsButton
+
+-- Close Button
+local closeButton = Instance.new("TextButton")
+closeButton.Size = UDim2.new(0, 30, 0, 30)
+closeButton.Position = UDim2.new(1, -35, 0, 5)
+closeButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+closeButton.BorderSizePixel = 0
+closeButton.Text = "X"
+closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeButton.TextScaled = true
+closeButton.Font = Enum.Font.GothamBold
+closeButton.Parent = mainFrame
+
+local closeCorner = Instance.new("UICorner")
+closeCorner.CornerRadius = UDim.new(0, 4)
+closeCorner.Parent = closeButton
+
+-- Variables
+local godModeEnabled = false
+local infJumpEnabled = false
+local flyEnabled = false
+local noclipEnabled = false
+local infJumpConnection
+local flying = false
+local flySpeed = 50
+local bodyVelocity
+local bodyGyro
+
+-- Functions
+local function convertToNumber(text)
+    text = string.lower(text)
+    if text == "inf" or text == "infinite" or text == "infinity" then
+        return math.huge
+    elseif text == "max" or text == "maximum" then
+        return 999999999
+    elseif text == "god" or text == "godmode" then
+        return math.huge
+    else
+        return tonumber(text) or 100
+    end
+end
+
+local function setHealth()
+    local healthText = healthTextBox.Text
+    if healthText == "" then return end
+    
+    local healthAmount = convertToNumber(healthText)
+    
+    if player.Character and player.Character:FindFirstChild("Humanoid") then
+        local humanoid = player.Character.Humanoid
+        humanoid.MaxHealth = healthAmount
+        humanoid.Health = healthAmount
+        
+        healthTextBox.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+        wait(0.5)
+        healthTextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    end
+end
+
+local function killAll()
+    for _, otherPlayer in pairs(Players:GetPlayers()) do
+        if otherPlayer ~= player and otherPlayer.Character and otherPlayer.Character:FindFirstChild("Humanoid") then
+            otherPlayer.Character.Humanoid.Health = 0
+        end
+    end
+end
+
+local function respawnPlayer()
+    if player.Character then
+        player.Character:BreakJoints()
+    end
+end
+
+local function toggleGodMode()
+    godModeEnabled = not godModeEnabled
+    if player.Character and player.Character:FindFirstChild("Humanoid") then
+        local humanoid = player.Character.Humanoid
+        if godModeEnabled then
+            humanoid.MaxHealth = math.huge
+            humanoid.Health = math.huge
+            godModeButton.Text = "GOD MODE: ON"
+            godModeButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+        else
+            humanoid.MaxHealth = 100
+            humanoid.Health = 100
+            godModeButton.Text = "GOD MODE: OFF"
+            godModeButton.BackgroundColor3 = Color3.fromRGB(255, 215, 0)
+        end
+    end
+end
+
+local function toggleInfJump()
+    infJumpEnabled = not infJumpEnabled
+    if infJumpEnabled then
+        infJumpConnection = UserInputService.JumpRequest:Connect(function()
+            if player.Character and player.Character:FindFirstChild("Humanoid") then
+                player.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            end
+        end)
+        infJumpButton.Text = "INF JUMP: ON"
+        infJumpButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+    else
+        if infJumpConnection then
+            infJumpConnection:Disconnect()
+        end
+        infJumpButton.Text = "INF JUMP: OFF"
+        infJumpButton.BackgroundColor3 = Color3.fromRGB(138, 43, 226)
+    end
+end
+
+local function setSpeed()
+    local speed = tonumber(speedTextBox.Text) or 16
+    if player.Character and player.Character:FindFirstChild("Humanoid") then
+        player.Character.Humanoid.WalkSpeed = speed
+        speedTextBox.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+        wait(0.5)
+        speedTextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    end
+end
+
+local function startFlying()
+    if not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then return end
+    
+    flying = true
+    local rootPart = player.Character.HumanoidRootPart
+    local humanoid = player.Character:FindFirstChild("Humanoid")
+    
+    bodyVelocity = Instance.new("BodyVelocity")
+    bodyVelocity.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+    bodyVelocity.Velocity = Vector3.new(0, 0, 0)
+    bodyVelocity.Parent = rootPart
+    
+    bodyGyro = Instance.new("BodyGyro")
+    bodyGyro.MaxTorque = Vector3.new(9e9, 9e9, 9e9)
+    bodyGyro.P = 9e4
+    bodyGyro.Parent = rootPart
+    
+    if humanoid then
+        humanoid.PlatformStand = true
+    end
+    
+    local flyConnection
+    flyConnection = game:GetService("RunService").Heartbeat:Connect(function()
+        if not flying or not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then 
+            if flyConnection then
+                flyConnection:Disconnect()
+            end
+            return 
+        end
+        
+        local camera = workspace.CurrentCamera
+        local humanoid2 = player.Character:FindFirstChild("Humanoid")
+        if not humanoid2 then return end
+        
+        local moveVector = humanoid2.MoveDirection
+        bodyGyro.CFrame = camera.CFrame
+        
+        local velocity = Vector3.new(0, 0, 0)
+        
+        if moveVector.Magnitude > 0 then
+            velocity = camera.CFrame.LookVector * moveVector.Z * flySpeed + 
+                      camera.CFrame.RightVector * moveVector.X * flySpeed
+        end
+        
+        if UserInputService:IsKeyDown(Enum.KeyCode.Space) then
+            velocity = velocity + Vector3.new(0, flySpeed, 0)
+        elseif UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) then
+            velocity = velocity + Vector3.new(0, -flySpeed, 0)
+        end
+        
+        if bodyVelocity then
+            bodyVelocity.Velocity = velocity
+        end
+    end)
+end
+
+local function stopFlying()
+    flying = false
+    if bodyVelocity then
+        bodyVelocity:Destroy()
+        bodyVelocity = nil
+    end
+    if bodyGyro then
+        bodyGyro:Destroy()
+        bodyGyro = nil
+    end
+    if player.Character and player.Character:FindFirstChild("Humanoid") then
+        player.Character.Humanoid.PlatformStand = false
+    end
+end
+
+local function toggleFly()
+    flyEnabled = not flyEnabled
+    if flyEnabled then
+        flyButton.Text = "FLY: ON"
+        flyButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+        startFlying()
+    else
+        flyButton.Text = "FLY: OFF"
+        flyButton.BackgroundColor3 = Color3.fromRGB(30, 144, 255)
+        stopFlying()
+    end
+end
+
+local function tpToSpawn()
+    if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        player.Character.HumanoidRootPart.CFrame = CFrame.new(0, 50, 0)
+    end
+end
+
+local function toggleNoclip()
+    noclipEnabled = not noclipEnabled
+    if noclipEnabled then
+        noclipButton.Text = "NOCLIP: ON"
+        noclipButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+    else
+        noclipButton.Text = "NOCLIP: OFF"
+        noclipButton.BackgroundColor3 = Color3.fromRGB(255, 69, 0)
+    end
+end
+
+local function giveBtools()
+    local btools = {
+        {Name = "Clone", BinType = Enum.BinType.Clone},
+        {Name = "Hammer", BinType = Enum.BinType.Hammer},
+        {Name = "Grab", BinType = Enum.BinType.Grab}
+    }
+    
+    for _, toolData in pairs(btools) do
+        local tool = Instance.new("HopperBin")
+        tool.Name = toolData.Name
+        tool.BinType = toolData.BinType
+        tool.Parent = player.Backpack
+    end
+end
+
+local function kickPlayer()
+    local targetName = kickTextBox.Text
+    if targetName == "" then return end
+    
+    for _, targetPlayer in pairs(Players:GetPlayers()) do
+        if string.lower(targetPlayer.Name):find(string.lower(targetName)) then
+            if targetPlayer.Character and targetPlayer.Character:FindFirstChild("Head") then
+                targetPlayer:Kick("You have been kicked by an admin")
+            end
+            kickTextBox.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+            wait(0.5)
+            kickTextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            return
+        end
+    end
+    -- Player not found
+    kickTextBox.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+    wait(0.5)
+    kickTextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+end
+
+local frozenPlayers = {}
+
+local function freezePlayer()
+    local targetName = freezeTextBox.Text
+    if targetName == "" then return end
+    
+    for _, targetPlayer in pairs(Players:GetPlayers()) do
+        if string.lower(targetPlayer.Name):find(string.lower(targetName)) then
+            if targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                local hrp = targetPlayer.Character.HumanoidRootPart
+                
+                if frozenPlayers[targetPlayer.Name] then
+                    -- Unfreeze
+                    if hrp:FindFirstChild("FreezeAnchor") then
+                        hrp.FreezeAnchor:Destroy()
+                    end
+                    hrp.Anchored = false
+                    frozenPlayers[targetPlayer.Name] = nil
+                    freezeButton.Text = "FREEZE"
+                    freezeButton.BackgroundColor3 = Color3.fromRGB(0, 191, 255)
+                else
+                    -- Freeze
+                    hrp.Anchored = true
+                    local anchor = Instance.new("BodyPosition")
+                    anchor.Name = "FreezeAnchor"
+                    anchor.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+                    anchor.Position = hrp.Position
+                    anchor.Parent = hrp
+                    frozenPlayers[targetPlayer.Name] = true
+                    freezeButton.Text = "UNFREEZE"
+                    freezeButton.BackgroundColor3 = Color3.fromRGB(255, 100, 0)
+                end
+                
+                freezeTextBox.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+                wait(0.5)
+                freezeTextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                return
+            end
+        end
+    end
+end
+
+local function addHoverEffect(button, originalColor)
+    button.MouseEnter:Connect(function()
+        if not string.match(button.Text, "ON") then
+            TweenService:Create(button, TweenInfo.new(0.2), {
+                BackgroundColor3 = Color3.fromRGB(
+                    math.min(originalColor.R * 255 + 40, 255),
+                    math.min(originalColor.G * 255 + 40, 255),
+                    math.min(originalColor.B * 255 + 40, 255)
+                )
+            }):Play()
+        end
+    end)
+    
+    button.MouseLeave:Connect(function()
+        if not string.match(button.Text, "ON") then
+            TweenService:Create(button, TweenInfo.new(0.2), {
+                BackgroundColor3 = originalColor
+            }):Play()
+        end
+    end)
+end
+
+-- Connect Events
+setHealthButton.MouseButton1Click:Connect(setHealth)
+killAllButton.MouseButton1Click:Connect(killAll)
+respawnButton.MouseButton1Click:Connect(respawnPlayer)
+godModeButton.MouseButton1Click:Connect(toggleGodMode)
+infJumpButton.MouseButton1Click:Connect(toggleInfJump)
+setSpeedButton.MouseButton1Click:Connect(setSpeed)
+flyButton.MouseButton1Click:Connect(toggleFly)
+tpSpawnButton.MouseButton1Click:Connect(tpToSpawn)
+noclipButton.MouseButton1Click:Connect(toggleNoclip)
+btoolsButton.MouseButton1Click:Connect(giveBtools)
+kickButton.MouseButton1Click:Connect(kickPlayer)
+freezeButton.MouseButton1Click:Connect(freezePlayer)
+closeButton.MouseButton1Click:Connect(function()
+    screenGui:Destroy()
+end)
+
+-- Hover Effects
+addHoverEffect(setHealthButton, Color3.fromRGB(255, 20, 147))
+addHoverEffect(killAllButton, Color3.fromRGB(255, 50, 50))
+addHoverEffect(respawnButton, Color3.fromRGB(50, 255, 50))
+addHoverEffect(godModeButton, Color3.fromRGB(255, 215, 0))
+addHoverEffect(infJumpButton, Color3.fromRGB(138, 43, 226))
+addHoverEffect(setSpeedButton, Color3.fromRGB(255, 20, 147))
+addHoverEffect(flyButton, Color3.fromRGB(30, 144, 255))
+addHoverEffect(tpSpawnButton, Color3.fromRGB(255, 140, 0))
+addHoverEffect(noclipButton, Color3.fromRGB(255, 69, 0))
+addHoverEffect(btoolsButton, Color3.fromRGB(34, 139, 34))
+addHoverEffect(kickButton, Color3.fromRGB(255, 0, 0))
+addHoverEffect(freezeButton, Color3.fromRGB(0, 191, 255))
+
+-- Enter Key Support
+healthTextBox.FocusLost:Connect(function(enterPressed)
+    if enterPressed then setHealth() end
+end)
+
+speedTextBox.FocusLost:Connect(function(enterPressed)
+    if enterPressed then setSpeed() end
+end)
+
+kickTextBox.FocusLost:Connect(function(enterPressed)
+    if enterPressed then kickPlayer() end
+end)
+
+freezeTextBox.FocusLost:Connect(function(enterPressed)
+    if enterPressed then freezePlayer() end
+end)
+
+-- Noclip Loop
+game:GetService("RunService").Stepped:Connect(function()
+    if noclipEnabled and player.Character then
+        for _, part in pairs(player.Character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = false
+            end
+        end
+    end
+end)
+
+-- Character Respawn Handler
+player.CharacterAdded:Connect(function(character)
+    wait(1)
+    if godModeEnabled and character:FindFirstChild("Humanoid") then
+        character.Humanoid.MaxHealth = math.huge
+        character.Humanoid.Health = math.huge
+    end
+    if flyEnabled then
+        wait(0.5)
+        startFlying()
+    end
+end)
+
+-- Startup Animation
+mainFrame.Size = UDim2.new(0, 0, 0, 0)
+TweenService:Create(mainFrame, TweenInfo.new(0.5, Enum.EasingStyle.Back), {
+    Size = UDim2.new(0, 450, 0, 550)
+}):Play()
+
+print("Aqua's GUI Loaded Successfully!")

